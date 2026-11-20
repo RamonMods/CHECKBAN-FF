@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CheckBan — verificar banimento no Free Fire | RamonMods</title>
+<meta name="description" content="Consulte pelo UID se uma conta de Free Fire está banida e qual é a duração do banimento. Consulta direta ao endpoint público da Garena, sem login e sem senha.">
+<meta name="theme-color" content="#f8f9fa">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/geist-normal-01.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="../site.css">
+<link rel="stylesheet" href="checkban.css">
+</head>
+<body>
+
+<header class="lp-nav" data-theme="light">
+  <a class="ks-wordmark" href="../" aria-label="RamonMods, início">
+    <span class="rm-brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M8 17V8h5a3 3 0 0 1 0 6H8"/><path d="m13 14 3.5 3.5"/></svg>
+      RamonMods
+    </span>
+  </a>
+  <nav class="lp-nav__links" aria-label="Seções">
+    <a href="../#como-usar">Como funciona</a>
+    <a href="../#o-que-vem">Recursos</a>
+    <a href="../#preco">Acesso</a>
+    <a href="../#duvidas">Dúvidas</a>
+  </nav>
+  <div class="lp-nav__end">
+    <a class="ks-btn ks-btn--secondary ks-btn--sm" href="../">
+      <span class="ks-btn__content">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;display:block" aria-hidden="true" focusable="false"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+        Voltar ao site
+      </span>
+    </a>
+  </div>
+</header>
+
+<main>
+
+<section class="lp-section rm-tool" id="tool" aria-labelledby="tool-title">
+  <div class="lp-container rm-tool__grid">
+
+    <div class="rm-tool__main">
+      <span class="lp-tag">CheckBan · Free Fire</span>
+      <h1 id="tool-title" class="rm-tool__title">Consultar <span class="ks-accent-word">banimento.</span></h1>
+      <p class="lp-lead">Digite o UID da conta. A consulta vai direto ao endpoint público da Garena e volta com o status — sem login, sem senha e sem instalar nada.</p>
+
+      <form class="lp-capture rm-form" id="form" novalidate>
+        <label class="sr-only" for="uid">UID do jogador</label>
+        <div class="lp-capture__field">
+          <span class="rm-form__prefix" aria-hidden="true">UID</span>
+          <input id="uid" name="uid" type="text" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false"
+                 pattern="[0-9]{6,12}" maxlength="12" placeholder="123456789" required>
+        </div>
+        <button class="ks-btn ks-btn--primary ks-btn--lg" id="submit" type="submit">
+          <span class="ks-btn__content"><span id="submit-label">Consultar</span></span>
+        </button>
+      </form>
+      <p class="rm-hint" id="hint" role="status" aria-live="polite">6 a 12 dígitos, só números.</p>
+
+      <section class="lp-app rm-result" id="result" aria-live="polite" hidden>
+        <div class="lp-app__top">
+          <div class="rm-result__head">
+            <span class="rm-result__dot" id="status-dot" aria-hidden="true"></span>
+            <div>
+              <small class="rm-result__kicker" id="status-kicker">Resultado da consulta</small>
+              <strong id="status-title">—</strong>
+            </div>
+          </div>
+          <span class="ks-badge ks-badge--accent" id="status-badge">—</span>
+        </div>
+
+        <dl class="rm-facts">
+          <div><dt>Nickname</dt><dd id="r-nick">—</dd></div>
+          <div><dt>UID</dt><dd id="r-uid">—</dd></div>
+          <div><dt>Região</dt><dd id="r-region">—</dd></div>
+          <div><dt>Período</dt><dd id="r-period">—</dd></div>
+          <div><dt>Tempo de resposta</dt><dd id="r-time">—</dd></div>
+          <div><dt>Fonte</dt><dd>Garena</dd></div>
+        </dl>
+
+        <p class="rm-result__note" id="result-note"></p>
+      </section>
+
+      <section class="rm-error" id="error" aria-live="assertive" hidden>
+        <strong id="error-title">Não foi possível consultar</strong>
+        <p id="error-text"></p>
+      </section>
+    </div>
+
+    <aside class="rm-tool__aside" aria-label="Sobre a consulta">
+      <div class="lp-panel lp-panel--surface">
+        <div class="lp-panel__top"><span>O que você precisa</span><span>1 dado</span></div>
+        <h2 class="rm-aside__title">Só o UID.</h2>
+        <ul class="lp-checks">
+          <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg>O número do perfil no jogo</li>
+          <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg>De 6 a 12 dígitos</li>
+          <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg>Nada mais</li>
+        </ul>
+      </div>
+
+      <div class="lp-panel lp-panel--soft">
+        <div class="lp-panel__top"><span>O que nunca pedimos</span><span>0 dados</span></div>
+        <h2 class="rm-aside__title">Nem senha, nem login.</h2>
+        <ul class="lp-checks">
+          <li><svg class="rm-dash" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/></svg>Login ou senha da conta</li>
+          <li><svg class="rm-dash" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/></svg>Token ou código de acesso</li>
+          <li><svg class="rm-dash" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/></svg>E-mail ou telefone</li>
+        </ul>
+      </div>
+
+      <p class="rm-aside__note">Consulta pública e gratuita. A RamonMods não é afiliada à Garena e não bane nem desbane contas.</p>
+    </aside>
+
+  </div>
+</section>
+
+<section class="lp-section lp-section--subtle" aria-labelledby="entenda-titulo">
+  <div class="lp-container">
+    <div class="lp-head lp-head--center lp-reveal">
+      <span class="lp-tag">Por baixo do capô</span>
+      <h2 id="entenda-titulo" class="lp-h2">Simples por fora. <span class="ks-accent-word">Direto por dentro.</span></h2>
+    </div>
+    <div class="lp-inside">
+      <div class="lp-panel lp-panel--surface lp-reveal">
+        <div class="lp-inside__head">
+          <span class="lp-row__icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></span>
+          <h3>De onde vem a resposta</h3>
+        </div>
+        <p>Do endpoint <code>ff.garena.com/api/antihack/check_banned</code>, o mesmo consultado pela página de suporte da Garena. A ferramenta só repassa o que ele responde.</p>
+      </div>
+      <div class="lp-panel lp-panel--surface lp-reveal">
+        <div class="lp-inside__head">
+          <span class="lp-row__icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+          <h3>O que o período significa</h3>
+        </div>
+        <p>A Garena devolve um código de 1 a 6: 1 semana, 1 mês, 3 meses, 6 meses, 1 ano ou permanente. A ferramenta traduz esse código e não calcula data de início nem de fim.</p>
+      </div>
+      <div class="lp-panel lp-panel--surface lp-reveal">
+        <div class="lp-inside__head">
+          <span class="lp-row__icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/></svg></span>
+          <h3>Limites do serviço</h3>
+        </div>
+        <p>20 consultas por minuto por IP e cache de 5 minutos por UID. A API é gratuita e pode hibernar: a primeira consulta depois disso acorda o servidor.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="lp-footer" data-theme="dark" data-nav-theme="dark">
+  <div class="lp-container">
+    <div class="lp-footer__top">
+      <p class="lp-footer__mark" translate="no">Ramon<span>Mods</span></p>
+      <span class="ks-eyebrow ks-eyebrow--marker"><span class="ks-eyebrow__mark" style="background:var(--accent)" aria-hidden="true"></span>Ferramentas para Free Fire.</span>
+    </div>
+    <div class="lp-footer__grid">
+      <nav aria-label="Ferramenta">
+        <h2>Ferramenta</h2>
+        <ul>
+          <li><a href="#tool">CheckBan</a></li>
+          <li><a href="../#como-usar">Como funciona</a></li>
+          <li><a href="../#o-que-vem">Recursos</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Projeto">
+        <h2>Projeto</h2>
+        <ul>
+          <li><a href="../">RamonMods</a></li>
+          <li><a href="https://github.com/RamonMods/OpenWarp" target="_blank" rel="noopener">OpenWarp</a></li>
+          <li><a href="https://github.com/RamonMods/ramonmods-site" target="_blank" rel="noopener">GitHub</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Código">
+        <h2>Código</h2>
+        <ul>
+          <li><a href="https://github.com/RamonMods/ramonmods-site/blob/main/checkban.py" target="_blank" rel="noopener">checkban.py</a></li>
+          <li><a href="https://github.com/RamonMods/ramonmods-site/blob/main/server/app.py" target="_blank" rel="noopener">server/app.py</a></li>
+          <li><a href="https://github.com/RamonMods/ramonmods-site#readme" target="_blank" rel="noopener">README</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Legal">
+        <h2>Legal</h2>
+        <ul>
+          <li><a href="https://ff.garena.com/en/support/" target="_blank" rel="noopener">Suporte da Garena</a></li>
+          <li><a href="https://github.com/RamonMods/ramonmods-site/issues" target="_blank" rel="noopener">Reportar problema</a></li>
+          <li><span>Não afiliado à Garena</span></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="lp-footer__bottom">
+      <span>© <span id="ano">2026</span> RamonMods · não afiliado à Garena. Free Fire é marca da Garena.</span>
+      <a href="https://github.com/RamonMods" target="_blank" rel="noopener">github.com/RamonMods</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../app.js" defer></script>
+<script src="checkban.js" defer></script>
+</body>
+</html>

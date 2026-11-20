@@ -2,7 +2,7 @@ services:
   - type: web
     name: ramonmods
     runtime: static
-    staticPublishPath: ./
+    staticPublishPath: ./public
     headers:
       - path: /assets/*
         name: Cache-Control
@@ -10,3 +10,14 @@ services:
       - path: /*
         name: X-Content-Type-Options
         value: nosniff
+
+  - type: web
+    name: ramonmods-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r server/requirements.txt
+    startCommand: gunicorn --chdir server app:app --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 60
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
