@@ -1,11 +1,11 @@
-/* RamonMods — interações da home (nav, reveal, scrollytelling, FAQ) */
+/* --- RamonMods — interações da home (nav, reveal, scrollytelling, FAQ) --- */
 (function () {
   "use strict";
 
   var doc = document.documentElement;
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ---------- reveal ao entrar na tela ---------- */
+  /* --- reveal ao entrar na tela --- */
   var revealEls = Array.prototype.slice.call(document.querySelectorAll(".lp-reveal"));
 
   if (reduced || !("IntersectionObserver" in window)) {
@@ -22,7 +22,7 @@
     revealEls.forEach(function (el) { io.observe(el); });
   }
 
-  /* ---------- tema da nav conforme a seção sob ela ---------- */
+  /* --- tema da nav conforme a seção sob ela --- */
   var nav = document.querySelector(".lp-nav");
   var themed = Array.prototype.slice.call(document.querySelectorAll("main > section, body > footer"));
 
@@ -40,7 +40,7 @@
     if (nav.getAttribute("data-theme") !== theme) nav.setAttribute("data-theme", theme);
   }
 
-  /* ---------- scrollytelling "como funciona" ---------- */
+  /* --- scrollytelling "como funciona" --- */
   var steps = Array.prototype.slice.call(document.querySelectorAll(".lp-story__step"));
   var tabs = Array.prototype.slice.call(document.querySelectorAll(".lp-story__tab"));
   var scenes = Array.prototype.slice.call(document.querySelectorAll(".rm-scene[data-scene]"));
@@ -81,7 +81,7 @@
     setStep(best);
   }
 
-  /* ---------- FAQ: uma resposta aberta por vez ---------- */
+  /* --- FAQ: uma resposta aberta por vez --- */
   var faqItems = Array.prototype.slice.call(document.querySelectorAll(".lp-faq__item"));
   faqItems.forEach(function (item) {
     item.addEventListener("toggle", function () {
@@ -92,7 +92,7 @@
     });
   });
 
-  /* ---------- scroll (um listener, um rAF) ---------- */
+  /* --- scroll (um listener, um rAF) --- */
   var ticking = false;
 
   function onScroll() {
@@ -110,7 +110,7 @@
   syncNavTheme();
   syncStep();
 
-  /* ano no rodapé, se existir */
+  /* --- ano no rodapé, se existir --- */
   var year = document.getElementById("ano");
   if (year) year.textContent = new Date().getFullYear();
 })();

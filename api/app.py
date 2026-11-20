@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""CheckBan (Flask) — serve o site estático e o endpoint de consulta no mesmo serviço."""
+# --- CheckBan (Flask) — serve o site estático e o endpoint de consulta no mesmo serviço. --- #
 
 from __future__ import annotations
 
@@ -18,19 +18,21 @@ from core.checkban import CheckBanError, checkban  # noqa: E402
 
 app = Flask(__name__)
 
+# --- pasta do site estático (public/). --- #
 PUBLIC_DIR = ROOT / "public"
 
+# --- origens permitidas para CORS. --- #
 ALLOWED_ORIGINS = {
     "https://ramonmods.onrender.com",
     "https://ramonmods.github.io",
 }
 LOCAL_ORIGIN = re.compile(r"^http://(?:localhost|127\.0\.0\.1)(?::\d+)?$")
 
-# cache simples: uid -> (expira_em, resultado)
+# --- cache simples: uid -> (expira_em, resultado) --- #
 _CACHE: dict[str, tuple[float, dict]] = {}
-_CACHE_TTL = 300  # 5 minutos
+_CACHE_TTL = 300  # --- 5 minutos --- #
 
-# limite simples por IP: 20 consultas por minuto
+# --- limite simples por IP: 20 consultas por minuto --- #
 _HITS: dict[str, list[float]] = {}
 _LIMIT = 20
 _WINDOW = 60
@@ -72,6 +74,7 @@ def _cors(resp):
     return resp
 
 
+# --- health check do Render. --- #
 @app.get("/healthz")
 def health():
     return jsonify({"servico": "CheckBan", "status": "online"})
@@ -103,7 +106,7 @@ def handle_checkban():
     return jsonify(resultado)
 
 
-# site estático: qualquer caminho que não seja API cai aqui
+# --- site estático: qualquer caminho que não seja API cai aqui --- #
 @app.get("/", defaults={"path": ""})
 @app.get("/<path:path>")
 def serve_site(path: str):

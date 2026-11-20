@@ -1,27 +1,11 @@
 # -*- coding: utf-8 -*-
-"""CheckBan — verifica se um jogador de Free Fire está banido.
-
-Fonte do status: endpoint público usado pela própria página de suporte da
-Garena (``ff.garena.com/api/antihack/check_banned``). Não usa login, token,
-conta ou credencial de terceiro — só o UID.
-
-O campo ``period`` da Garena é um código, não uma quantidade de meses:
-
-    1 = 1 semana
-    2 = 1 mês
-    3 = 3 meses
-    4 = 6 meses
-    5 = 1 ano
-    6 = banimento permanente
-
-    from core.checkban import checkban
-    r = checkban("123456789")
-    if r["banned"]:
-        print(r["period_label"])
-
-CLI:
-    python core/checkban.py 123456789
-"""
+# --- CheckBan — verifica se um jogador de Free Fire está banido. --- #
+# --- Fonte do status: endpoint público usado pela própria página de suporte da Garena. --- #
+# --- Não usa login, token, conta ou credencial de terceiro — só o UID. --- #
+# --- O campo period da Garena é um código, não uma quantidade de meses: --- #
+# --- 1 = 1 semana | 2 = 1 mês | 3 = 3 meses | 4 = 6 meses | 5 = 1 ano | 6 = permanente --- #
+# --- Uso: from core.checkban import checkban; checkban("123456789") --- #
+# --- CLI: python core/checkban.py 123456789 --- #
 
 from __future__ import annotations
 
@@ -31,9 +15,13 @@ from typing import Any
 
 import requests
 
+# --- URL pública de consulta de banimento da Garena. --- #
 GARENA_BAN_URL = "https://ff.garena.com/api/antihack/check_banned"
+
+# --- URL de lookup de nickname/região (best-effort). --- #
 SHOP2GAME_URL = "https://shop2game.com/api/auth/player_id_login"
 
+# --- cabeçalhos que imitam o navegador na consulta à Garena. --- #
 GARENA_HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 "
@@ -45,10 +33,11 @@ GARENA_HEADERS = {
     "sec-fetch-dest": "empty",
     "sec-fetch-mode": "cors",
     "sec-fetch-site": "same-origin",
-    # token exigido pelo endpoint; é o mesmo valor público da página de suporte
+    # --- token exigido pelo endpoint; é o mesmo valor público da página de suporte --- #
     "x-requested-with": "B6FksShzIgjfrYImLpTsadjS86sddhFH",
 }
 
+# --- cabeçalhos da consulta ao Shop2Game. --- #
 SHOP2GAME_HEADERS = {
     "Accept-Language": "en-US,en;q=0.9",
     "Connection": "keep-alive",
@@ -62,6 +51,7 @@ SHOP2GAME_HEADERS = {
     "content-type": "application/json",
 }
 
+# --- cookies de sessão públicos do Shop2Game. --- #
 SHOP2GAME_COOKIES = {
     "source": "mb",
     "region": "MA",
@@ -69,7 +59,7 @@ SHOP2GAME_COOKIES = {
     "session_key": "efwfzwesi9ui8drux4pmqix4cosane0y",
 }
 
-# códigos de duração usados pela página de suporte da Garena
+# --- códigos de duração usados pela página de suporte da Garena --- #
 PERIOD_LABELS = {
     1: "1 semana",
     2: "1 mês",
@@ -80,8 +70,9 @@ PERIOD_LABELS = {
 }
 
 
+# --- erro de UID inválido, conta inexistente ou falha de rede/API. --- #
 class CheckBanError(Exception):
-    """UID inválido, conta inexistente ou falha de rede/API."""
+    pass
 
 
 def _parse_uid(uid: str) -> str:
@@ -91,6 +82,7 @@ def _parse_uid(uid: str) -> str:
     return uid
 
 
+# --- GET com retry em 5xx e erros de rede. --- #
 def _get(session: requests.Session, url: str, *, params: dict, headers: dict,
          timeout: float, retries: int) -> requests.Response:
     last: Exception | None = None
@@ -107,8 +99,8 @@ def _get(session: requests.Session, url: str, *, params: dict, headers: dict,
     raise CheckBanError(f"Falha ao consultar a API: {last}")
 
 
+# --- nickname e região via Shop2Game; best-effort, nunca derruba o checkban. --- #
 def _player_info(session: requests.Session, uid: str) -> tuple[str | None, str | None]:
-    """Nickname e região via Shop2Game. Best-effort: não derruba o checkban."""
     try:
         resp = session.post(
             SHOP2GAME_URL,
@@ -129,22 +121,14 @@ def _player_info(session: requests.Session, uid: str) -> tuple[str | None, str |
 
 def checkban(uid: str, *, lang: str = "en", timeout: float = 15,
              retries: int = 3) -> dict[str, Any]:
-    """Verifica o banimento de um jogador de Free Fire pelo UID.
-
-    Args:
-        uid: ID do jogador (6 a 12 dígitos).
-        lang: idioma da resposta da Garena (``en``, ``pt``, ...).
-        timeout: timeout de cada requisição, em segundos.
-        retries: tentativas em caso de erro 5xx ou de rede.
-
-    Returns:
-        dict com ``uid``, ``banned``, ``is_banned``, ``period`` (código de 1 a
-        6), ``period_label``, ``status``, ``message``, ``nickname``, ``region``
-        e ``elapsed_ms``.
-
-    Raises:
-        CheckBanError: UID inválido, conta inexistente ou falha na API.
-    """
+    # --- Verifica o banimento de um jogador de Free Fire pelo UID. --- #
+    # --- uid: ID do jogador (6 a 12 dígitos). --- #
+    # --- lang: idioma da resposta da Garena (en, pt, ...). --- #
+    # --- timeout: timeout de cada requisição, em segundos. --- #
+    # --- retries: tentativas em caso de erro 5xx ou de rede. --- #
+    # --- Retorna dict com uid, banned, is_banned, period, period_label, --- #
+    # --- status, message, nickname, region e elapsed_ms. --- #
+    # --- Levanta CheckBanError se o UID for inválido ou a API falhar. --- #
     uid = _parse_uid(uid)
     started = time.time()
 
@@ -172,7 +156,7 @@ def checkban(uid: str, *, lang: str = "en", timeout: float = 15,
                 raise CheckBanError("UID não encontrado.")
             raise CheckBanError(f"Garena recusou a consulta: {motivo}")
 
-        # nickname/região são opcionais: nunca atrasam nem derrubam a consulta
+        # --- nickname/região são opcionais: nunca atrasam nem derrubam a consulta --- #
         nickname, region = _player_info(session, uid)
 
     data = payload["data"]
@@ -199,9 +183,10 @@ def checkban(uid: str, *, lang: str = "en", timeout: float = 15,
     }
 
 
+# --- CLI: python core/checkban.py <uid> --- #
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("uso: python checkban.py <uid>")
+        print("uso: python core/checkban.py <uid>")
         raise SystemExit(2)
     try:
         print(checkban(sys.argv[1]))
