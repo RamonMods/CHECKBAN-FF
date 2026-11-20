@@ -95,7 +95,9 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 .rm-final-title{max-width:640px}
 
 /* footer */
-.lp-footer__mark{letter-spacing:-.06em}
+.lp-footer{padding:56px 0 28px}
+.lp-footer__top{margin-bottom:36px}
+.lp-footer__mark{letter-spacing:-.06em;font-size:clamp(30px,4.6vw,60px);line-height:1}
 .lp-footer__grid a{color:var(--text-secondary);text-decoration:none}
 .lp-footer__grid a:hover{color:var(--text)}
 .lp-footer__grid h2{font:var(--weight-medium) 13px/1 var(--font-sans);color:var(--text);margin-bottom:14px}

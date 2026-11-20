@@ -14,7 +14,7 @@ from flask import Flask, jsonify, request
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from checkban import CheckBanError, checkban  # noqa: E402
+from core.checkban import CheckBanError, checkban  # noqa: E402
 
 app = Flask(__name__)
 

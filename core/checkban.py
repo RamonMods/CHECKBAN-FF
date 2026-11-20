@@ -14,13 +14,13 @@ O campo ``period`` da Garena é um código, não uma quantidade de meses:
     5 = 1 ano
     6 = banimento permanente
 
-    from checkban import checkban
+    from core.checkban import checkban
     r = checkban("123456789")
     if r["banned"]:
         print(r["period_label"])
 
 CLI:
-    python checkban.py 123456789
+    python core/checkban.py 123456789
 """
 
 from __future__ import annotations
