@@ -1,10 +1,6 @@
 (function () {
   "use strict";
 
-  var API = location.protocol === "file:" || /^(localhost|127\.0\.0\.1)$/.test(location.hostname)
-    ? "http://127.0.0.1:5000"
-    : "https://ramonmods.onrender.com";
-
   var form = document.getElementById("form");
   var input = document.getElementById("uid");
   var button = document.getElementById("submit");
@@ -76,6 +72,38 @@
     result.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
+  /* --- consulta: usa bridge nativo no app (Android) ou API no site. --- */
+  function consultar(uid) {
+    if (window.Android && typeof window.Android.checkBan === "function") {
+      return new Promise(function (resolve) {
+        try {
+          var raw = window.Android.checkBan(uid);
+          resolve(JSON.parse(raw));
+        } catch (e) {
+          resolve({ error: "Falha ao consultar: " + (e && e.message ? e.message : e) });
+        }
+      });
+    }
+    var API = location.protocol === "file:" || /^(localhost|127\.0\.0\.1)$/.test(location.hostname)
+      ? "http://127.0.0.1:5000"
+      : "https://ramonmods.onrender.com";
+    return fetch(API + "/checkban?uid=" + encodeURIComponent(uid), {
+      headers: { "Accept": "application/json" }
+    }).then(function (resp) {
+      return resp.json().then(function (body) {
+        return { ok: resp.ok, status: resp.status, body: body };
+      });
+    }).then(function (r) {
+      if (!r.ok) {
+        var err = new Error((r.body && r.body.error) || "Falha na consulta.");
+        err.status = r.status;
+        err.body = r.body;
+        throw err;
+      }
+      return r.body;
+    });
+  }
+
   form.addEventListener("submit", function (event) {
     event.preventDefault();
     var uid = input.value.trim();
@@ -92,35 +120,34 @@
     reset();
 
     slowTimer = setTimeout(function () {
-      setHint("Acordando o servidor (pode levar até 50s)…", false);
+      setHint("Consultando…", false);
     }, 4000);
 
-    fetch(API + "/checkban?uid=" + encodeURIComponent(uid), {
-      headers: { "Accept": "application/json" }
-    })
-      .then(function (resp) {
-        return resp.json().then(function (body) {
-          return { ok: resp.ok, status: resp.status, body: body };
-        });
-      })
-      .then(function (r) {
-        if (!r.ok) {
-          var msg = (r.body && r.body.error) || "Falha na consulta.";
-          if (r.status === 404 && /não encontrado/i.test(msg)) {
+    consultar(uid)
+      .then(function (body) {
+        if (body && body.error) {
+          var msg = body.error;
+          if (/não encontrado/i.test(msg)) {
             showError("UID não encontrado", "Confira o número. A Garena não reconhece esse UID.");
-          } else if (r.status === 429) {
-            showError("Muitas consultas", "Aguarde um minuto e tente de novo.");
           } else {
             showError("Não foi possível consultar", msg);
           }
           return;
         }
-        showResult(r.body);
+        showResult(body);
         setHint("Consulta concluída.", false);
       })
-      .catch(function () {
-        showError("Servidor indisponível", "Não foi possível falar com a API. Tente novamente em alguns segundos.");
-        setHint("Falha de conexão.", true);
+      .catch(function (err) {
+        var msg = (err && err.message) || "Falha na consulta.";
+        var status = err && err.status;
+        if (status === 404 && /não encontrado/i.test(msg)) {
+          showError("UID não encontrado", "Confira o número. A Garena não reconhece esse UID.");
+        } else if (status === 429) {
+          showError("Muitas consultas", "Aguarde um minuto e tente de novo.");
+        } else {
+          showError("Não foi possível consultar", msg);
+        }
+        setHint("Falha na consulta.", true);
       })
       .finally(function () {
         clearTimeout(slowTimer);

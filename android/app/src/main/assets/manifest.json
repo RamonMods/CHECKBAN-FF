@@ -1,0 +1,19 @@
+{
+  "name": "RamonMods CheckBan",
+  "short_name": "CheckBan",
+  "description": "Verifique se uma conta de Free Fire está banida, direto no celular.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b1020",
+  "theme_color": "#0b1020",
+  "icons": [
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

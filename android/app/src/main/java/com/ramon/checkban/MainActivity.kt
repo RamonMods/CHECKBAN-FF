@@ -13,9 +13,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(web)
         web.settings.javaScriptEnabled = true
         web.settings.domStorageEnabled = true
+        web.settings.allowFileAccess = true
         web.settings.cacheMode = WebSettings.LOAD_DEFAULT
+        web.addJavascriptInterface(CheckBanBridge(this), "Android")
         web.webViewClient = WebViewClient()
-        web.loadUrl("https://ramonmods.onrender.com/")
+        web.loadUrl("file:///android_asset/index.html")
     }
 
     override fun onBackPressed() {
