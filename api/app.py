@@ -75,7 +75,6 @@ def home():
     return jsonify({
         "servico": "CheckBan API",
         "status": "online",
-        "endpoint": "/checkban?uid=123456789",
     })
 
 
