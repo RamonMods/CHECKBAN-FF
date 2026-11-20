@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""API HTTP do CheckBan (Flask) — serve o endpoint público usado pelo site."""
+"""CheckBan (Flask) — serve o site estático e o endpoint de consulta no mesmo serviço."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ import sys
 import time
 from pathlib import Path
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
@@ -17,6 +17,8 @@ sys.path.insert(0, str(ROOT))
 from core.checkban import CheckBanError, checkban  # noqa: E402
 
 app = Flask(__name__)
+
+PUBLIC_DIR = ROOT / "public"
 
 ALLOWED_ORIGINS = {
     "https://ramonmods.onrender.com",
@@ -70,12 +72,9 @@ def _cors(resp):
     return resp
 
 
-@app.get("/")
-def home():
-    return jsonify({
-        "servico": "CheckBan API",
-        "status": "online",
-    })
+@app.get("/healthz")
+def health():
+    return jsonify({"servico": "CheckBan", "status": "online"})
 
 
 @app.get("/checkban")
@@ -102,6 +101,16 @@ def handle_checkban():
 
     _CACHE[uid] = (agora + _CACHE_TTL, resultado)
     return jsonify(resultado)
+
+
+# site estático: qualquer caminho que não seja API cai aqui
+@app.get("/", defaults={"path": ""})
+@app.get("/<path:path>")
+def serve_site(path: str):
+    alvo = PUBLIC_DIR / path
+    if path and alvo.is_file():
+        return send_from_directory(PUBLIC_DIR, path)
+    return send_from_directory(PUBLIC_DIR, "index.html")
 
 
 @app.errorhandler(404)

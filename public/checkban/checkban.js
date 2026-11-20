@@ -3,7 +3,7 @@
 
   var API = location.protocol === "file:" || /^(localhost|127\.0\.0\.1)$/.test(location.hostname)
     ? "http://127.0.0.1:5000"
-    : "https://ramonmods-api.onrender.com";
+    : "https://ramonmods.onrender.com";
 
   var form = document.getElementById("form");
   var input = document.getElementById("uid");
