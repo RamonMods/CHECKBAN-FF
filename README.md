@@ -67,20 +67,25 @@ Acesse: **https://ramonmods.github.io/CHECKBAN-FF/**
 ## Estrutura
 
 ```
-public/                 site estático (servido pelo próprio Flask)
+public/                 site estático (servido pelo próprio Flask) + PWA
   index.html            landing
   checkban/             ferramenta de consulta de banimento
-  assets/               favicon, preview, fontes woff2
+  assets/               favicon, preview, fontes woff2, ícone
+  manifest.json         manifesto PWA (instalável no celular)
+  sw.js                 service worker (cache offline)
 core/
   checkban.py           função checkban(uid) — núcleo da consulta
   __init__.py
 api/
   app.py                Flask: site + consulta, CORS, cache, rate limit
   requirements.txt
-render.yaml             serviço único no Render
+android/                app Android (WebView, mesmo visual do site)
+  app/                  módulo do app
 .github/
   workflows/pages.yml   deploy do site no GitHub Pages
+  workflows/build-apk.yml  build do APK via GitHub Actions
   FUNDING.yml           apoio via Pix (pixgg.com/ramon)
+render.yaml             serviço único no Render
 ```
 
 ## Apoio
