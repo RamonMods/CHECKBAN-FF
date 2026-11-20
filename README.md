@@ -79,11 +79,8 @@ core/
 api/
   app.py                Flask: site + consulta, CORS, cache, rate limit
   requirements.txt
-android/                app Android (WebView, mesmo visual do site)
-  app/                  módulo do app
 .github/
   workflows/pages.yml   deploy do site no GitHub Pages
-  workflows/build-apk.yml  build do APK via GitHub Actions
   FUNDING.yml           apoio via Pix (pixgg.com/ramon)
 render.yaml             serviço único no Render
 ```

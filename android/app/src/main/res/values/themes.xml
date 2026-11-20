@@ -1,9 +1,0 @@
-<resources>
-    <style name="Theme.CheckBan" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">#1B2B4B</item>
-        <item name="colorPrimaryDark">#1B2B4B</item>
-        <item name="colorAccent">#32BCAD</item>
-        <item name="android:windowBackground">@color/theme_background</item>
-        <item name="android:statusBarColor">#1B2B4B</item>
-    </style>
-</resources>
