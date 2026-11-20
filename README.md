@@ -6,7 +6,6 @@
 
 Verifique em segundos se um jogador de Free Fire está banido, direto no navegador.
 
-[![Site](https://img.shields.io/badge/Site-ramonmods.onrender.com-32BCAD?style=for-the-badge)](https://ramonmods.onrender.com/)
 [![GitHub Pages](https://img.shields.io/badge/Pages-ramonmods.github.io%2FCHECKBAN--FF-111111?style=for-the-badge&logo=github&logoColor=white)](https://ramonmods.github.io/CHECKBAN-FF/)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)](#)
 [![Flask](https://img.shields.io/badge/Flask-3.1-000000?style=for-the-badge&logo=flask&logoColor=white)](#)
@@ -63,10 +62,7 @@ memória por 5 minutos e não é gravado em banco.
 
 ## Site
 
-Acesse: **https://ramonmods.onrender.com/**
-
-Também publicado no GitHub Pages:
-**https://ramonmods.github.io/CHECKBAN-FF/**
+Acesse: **https://ramonmods.github.io/CHECKBAN-FF/**
 
 ## Estrutura
 
