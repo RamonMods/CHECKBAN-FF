@@ -63,9 +63,9 @@
     t.kicker.textContent = banned ? "Resultado da consulta" : "Resultado da consulta";
     t.title.textContent = banned ? "Conta banida" : "Conta limpa";
     t.badge.textContent = banned ? "BANIDO" : "SEM BANIMENTO";
-    t.nick.textContent = d.nickname || "não informado";
+    t.nick.textContent = d.nickname || "indisponível";
     t.uid.textContent = d.uid || input.value.trim();
-    t.region.textContent = d.region || "—";
+    t.region.textContent = d.region || "indisponível";
     t.period.textContent = banned ? periodLabel(d) : "—";
     t.time.textContent = (d.elapsed_ms || 0) + " ms";
     t.note.textContent = banned
